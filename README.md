@@ -10,6 +10,8 @@ code snippets for C256 Foenix
 ### textbox.asm
 demo of text-displaying routines. So far there is one element implemented: text box. See code for detailed description.
 
+![textbox demo with lorem ipsum](textbox.png)
+
 #### required files
 required by textbox.asm, should be placed in the same directory
 
