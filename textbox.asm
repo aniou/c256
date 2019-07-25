@@ -15,7 +15,7 @@
 ; OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
-.include "macros_inc.asm"
+.include "macros_inc.asm" ; take them from https://github.com/Trinity-11/Kernel
 .include "page_00_inc.asm"
 .include "vicky_def.asm"
 
