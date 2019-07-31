@@ -10,6 +10,8 @@ code snippets for C256 Foenix
 ### textbox.asm
 demo of text-displaying routines. So far there is one element implemented: text box. See code for detailed description.
 
+start address: $03:0000
+
 ![textbox demo with lorem ipsum](textbox.png)
 
 #### required files
@@ -21,6 +23,8 @@ _vicky_def.asm, page_00_inc.asm, macros_inc.asm_ should be taken from https://gi
 
 ### matrix.asm
 simple matrix-like effect. Warning - very crude delay loop, speed may vary on different platforms!
+
+start address: $03:0000
 
 ![matrix-like demo with rain of chars](matrix.png)
 
