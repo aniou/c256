@@ -1,0 +1,676 @@
+
+; 64tass Turbo Assembler Macro V1.55.2176 listing file
+; 64tass --m65816 --long-address --intel-hex -o graph3.hex --list graph3.lst graph3.asm
+; Sun Oct 18 00:12:43 2020
+
+;Offset	;Hex		;Monitor	;Source
+
+;******  Processing input file: graph3.asm
+
+
+;******  Processing file: macros_inc.asm
+
+
+;******  Return to file: graph3.asm
+
+
+;******  Processing file: page_00_inc.asm
+
+=$000000				BANK0_BEGIN      = $000000 ;Start of bank 0 and Direct page
+=$000000				unused_0000      = $000000 ;12 Bytes unused
+=$00000c				SCREENBEGIN      = $00000C ;3 Bytes Start of screen in video RAM. This is the upper-left corrner of the current video page being written to. This may not be what's being displayed by VICKY. Update this if you change VICKY's display page.
+=$00000f				COLS_VISIBLE     = $00000F ;2 Bytes Columns visible per screen line. A virtual line can be longer than displayed, up to COLS_PER_LINE long. Default = 80
+=$000011				COLS_PER_LINE    = $000011 ;2 Bytes Columns in memory per screen line. A virtual line can be this long. Default=128
+=$000013				LINES_VISIBLE    = $000013 ;2 Bytes The number of rows visible on the screen. Default=25
+=$000015				LINES_MAX        = $000015 ;2 Bytes The number of rows in memory for the screen. Default=64
+=$000017				CURSORPOS        = $000017 ;3 Bytes The next character written to the screen will be written in this location.
+=$00001a				CURSORX          = $00001A ;2 Bytes This is where the blinking cursor sits. Do not edit this direectly. Call LOCATE to update the location and handle moving the cursor correctly.
+=$00001c				CURSORY          = $00001C ;2 Bytes This is where the blinking cursor sits. Do not edit this direectly. Call LOCATE to update the location and handle moving the cursor correctly.
+=$00001e				CURCOLOR         = $00001E ;2 Bytes Color of next character to be printed to the screen.
+=$000020				CURATTR          = $000020 ;2 Bytes Attribute of next character to be printed to the screen.
+=$000022				STACKBOT         = $000022 ;2 Bytes Lowest location the stack should be allowed to write to. If SP falls below this value, the runtime should generate STACK OVERFLOW error and abort.
+=$000024				STACKTOP         = $000024 ;2 Bytes Highest location the stack can occupy. If SP goes above this value, the runtime should generate STACK OVERFLOW error and abort.
+=$000026				OPL2_OPERATOR    = $000026 ;
+=$000027				OPL2_CHANNEL     = $000027 ;
+=$000028				OPL2_REG_REGION  = $000028 ; Offset to the Group of Registers
+=$00002a				OPL2_REG_OFFSET  = $00002A ; 2 Bytes (16Bits)
+=$00002c				OPL2_IND_ADDY_LL = $00002C ; 2 Bytes Reserved (Only need 3)
+=$00002e				OPL2_IND_ADDY_HL = $00002E ; 2 Bytes Reserved (Only need 3)
+=$000030				OPL2_NOTE        = $000030 ; 1 Byte
+=$000031				OPL2_OCTAVE      = $000031 ; 1 Byte
+=$000032				OPL2_PARAMETER0  = $000032 ; 1 Byte
+=$000033				OPL2_PARAMETER1  = $000033 ; 1 Byte
+=$000034				OPL2_PARAMETER2  = $000034 ; 1 Byte
+=$000035				OPL2_PARAMETER3  = $000035 ; 1 Byte
+=$000036				OPL2_LOOP        = $000036 ;
+=$000038				SDCARD_FILE_PTR  = $000038 ; 3 Bytes Pointer to Filename to open
+=$00003c				SDCARD_BYTE_NUM  = $00003C ; 2Bytes
+=$00003f				SDCARD_PRSNT_MNT = $00003F ; 1 Byte, Indicate that the SDCard is Present and that it is Mounted
+=$000040				BMP_X_SIZE       = $000040 ; 2 Bytes
+=$000040				BM_CLEAR_SCRN_X  = $000040
+=$000042				BMP_Y_SIZE       = $000042 ; 2 Bytes
+=$000042				BM_CLEAR_SCRN_Y  = $000042
+=$000044				BMP_PRSE_SRC_PTR = $000044 ; 3 Bytes
+=$000048				BMP_PRSE_DST_PTR = $000048 ; 3 Bytes
+=$00004c				BMP_COLOR_PALET  = $00004C ; 2 Bytes
+=$00004e				SCRN_X_STRIDE    = $00004E ; 2 Bytes, Basically How many Pixel Accross in Bitmap Mode
+=$000050				BMP_FILE_SIZE    = $000050 ; 4 Bytes
+=$000054				BMP_POSITION_X   = $000054 ; 2 Bytes Where, the BMP will be position on the X Axis
+=$000056				BMP_POSITION_Y   = $000056 ; 2 Bytes Where, the BMP will be position on the Y Axis
+=$000058				BMP_PALET_CHOICE = $000058 ;
+=$0000d0				KERNEL_TEMP      = $0000D0 ;32 Bytes Temp space for kernel
+=$0000f0				USER_TEMP        = $0000F0 ;32 Bytes Temp space for user programs
+=$000100				GAVIN_BLOCK      = $000100 ;256 Bytes Gavin reserved, overlaps debugging registers at $1F0
+=$000100				MULTIPLIER_0     = $000100 ;0 Byte  Unsigned multiplier
+=$000100				M0_OPERAND_A     = $000100 ;2 Bytes Operand A (ie: A x B)
+=$000102				M0_OPERAND_B     = $000102 ;2 Bytes Operand B (ie: A x B)
+=$000104				M0_RESULT        = $000104 ;4 Bytes Result of A x B
+=$000108				MULTIPLIER_1     = $000108 ;0 Byte  Signed Multiplier
+=$000108				M1_OPERAND_A     = $000108 ;2 Bytes Operand A (ie: A x B)
+=$00010a				M1_OPERAND_B     = $00010A ;2 Bytes Operand B (ie: A x B)
+=$00010c				M1_RESULT        = $00010C ;4 Bytes Result of A x B
+=$000108				DIVIDER_0        = $000108 ;0 Byte  Unsigned divider
+=$000108				D0_OPERAND_A     = $000108 ;2 Bytes Divider 0 Dividend ex: A in  A/B
+=$00010a				D0_OPERAND_B     = $00010A ;2 Bytes Divider 0 Divisor ex B in A/B
+=$00010c				D0_RESULT        = $00010C ;2 Bytes Quotient result of A/B ex: 7/2 = 3 r 1
+=$00010e				D0_REMAINDER     = $00010E ;2 Bytes Remainder of A/B ex: 1 in 7/2=3 r 1
+=$000110				DIVIDER_1        = $000110 ;0 Byte  Signed divider
+=$000110				D1_OPERAND_A     = $000110 ;2 Bytes Divider 1 Dividend ex: A in  A/B
+=$000112				D1_OPERAND_B     = $000112 ;2 Bytes Divider 1 Divisor ex B in A/B
+=$000114				D1_RESULT        = $000114 ;2 Bytes Signed quotient result of A/B ex: 7/2 = 3 r 1
+=$000116				D1_REMAINDER     = $000116 ;2 Bytes Signed remainder of A/B ex: 1 in 7/2=3 r 1
+=$000120				ADDER_SIGNED_32  = $000120 ; The 32 Bit Adders takes 12Byte that are NOT RAM Location
+=$000140				INT_CONTROLLER   = $000140 ; $000140...$00015F Interrupt Controller
+=$01					FNX0_INT00_ALLONE = $01  ; Not Used - Always 1
+=$02					FNX0_INT01_SOF    = $02  ;Start of Frame @ 60FPS
+=$04					FNX0_INT02_SOL    = $04  ;Start of Line (Programmable)
+=$08					FNX0_INT03_TMR0   = $08  ;Timer 0 Interrupt
+=$10					FNX0_INT04_TMR1   = $10  ;Timer 1 Interrupt
+=$20					FNX0_INT05_TMR2   = $20  ;Timer 2 Interrupt
+=$40					FNX0_INT06_RTC    = $40  ;Real-Time Clock Interrupt
+=$80					FNX0_INT07_FDC    = $80  ;Floppy Disk Controller
+=$01					FNX1_INT00_KBD    = $01  ;Keyboard Interrupt
+=$02					FNX1_INT01_SC0    = $02  ;Sprite 2 Sprite Collision
+=$04					FNX1_INT02_SC1    = $04  ;Sprite 2 Tiles Collision
+=$08					FNX1_INT03_COM2   = $08  ;Serial Port 2
+=$10					FNX1_INT04_COM1   = $10  ;Serial Port 1
+=$20					FNX1_INT05_MPU401 = $20  ;Midi Controller Interrupt
+=$40					FNX1_INT06_LPT    = $40  ;Parallel Port
+=$80					FNX1_INT07_SDCARD = $80  ;SD Card Controller Interrupt
+=$01					FNX2_INT00_OPL2R  = $01  ;OPl2 Right Channel
+=$02					FNX2_INT01_OPL2L  = $02  ;OPL2 Left Channel
+=$04					FNX2_INT02_BTX_INT= $04  ;Beatrix Interrupt (TBD)
+=$08					FNX2_INT03_SDMA   = $08  ;System DMA
+=$10					FNX2_INT04_VDMA   = $10  ;Video DMA
+=$20					FNX2_INT05_DACHP  = $20  ;DAC Hot Plug
+=$40					FNX2_INT06_EXT    = $40  ;External Expansion
+=$80					FNX2_INT07_ALLONE = $80  ; Not Used - Always 1
+=$000160				TIMER_CONTROLLER = $000160 ; $000160...$00017F Timer0/Timer1/Timer2 Block
+=$000160				TIMER_CTRL_REGLL = $000160 ;
+=$000161				TIMER_CTRL_REGLH = $000161 ;
+=$000162				TIMER_CTRL_REGHL = $000162 ;
+=$000163				TIMER_CTRL_REGHH = $000163 ;
+=$0001ff				VECTOR_STATE     = $0001FF ;1 Byte  Interrupt Vector State. See VECTOR_STATE_ENUM
+=$000240				CPU_REGISTERS    = $000240 ; Byte
+=$000240				CPUPC            = $000240 ;2 Bytes Program Counter (PC)
+=$000242				CPUPBR           = $000242 ;2 Bytes Program Bank Register (K)
+=$000244				CPUA             = $000244 ;2 Bytes Accumulator (A)
+=$000246				CPUX             = $000246 ;2 Bytes X Register (X)
+=$000248				CPUY             = $000248 ;2 Bytes Y Register (Y)
+=$00024a				CPUSTACK         = $00024A ;2 Bytes Stack Pointer (S)
+=$00024c				CPUDP            = $00024C ;2 Bytes Direct Page Register (D)
+=$00024e				CPUDBR           = $00024E ;1 Byte  Data Bank Register (B)
+=$00024f				CPUFLAGS         = $00024F ;1 Byte  Flags (P)
+=$000250				MONITOR_VARS     = $000250 ; Byte  MONITOR Variables. BASIC variables may overlap this space
+=$000250				MCMDADDR         = $000250 ;3 Bytes Address of the current line of text being processed by the command parser. Can be in display memory or a variable in memory. MONITOR will parse up to MTEXTLEN characters or to a null character.
+=$000253				MCMP_TEXT        = $000253 ;3 Bytes Address of symbol being evaluated for COMPARE routine
+=$000256				MCMP_LEN         = $000256 ;2 Bytes Length of symbol being evaluated for COMPARE routine
+=$000258				MCMD             = $000258 ;3 Bytes Address of the current command/function string
+=$00025b				MCMD_LEN         = $00025B ;2 Bytes Length of the current command/function string
+=$00025d				MARG1            = $00025D ;4 Bytes First command argument. May be data or address, depending on command
+=$000261				MARG2            = $000261 ;4 Bytes First command argument. May be data or address, depending on command. Data is 32-bit number. Address is 24-bit address and 8-bit length.
+=$000265				MARG3            = $000265 ;4 Bytes First command argument. May be data or address, depending on command. Data is 32-bit number. Address is 24-bit address and 8-bit length.
+=$000269				MARG4            = $000269 ;4 Bytes First command argument. May be data or address, depending on command. Data is 32-bit number. Address is 24-bit address and 8-bit length.
+=$00026d				MARG5            = $00026D ;4 Bytes First command argument. May be data or address, depending on command. Data is 32-bit number. Address is 24-bit address and 8-bit length.
+=$000271				MARG6            = $000271 ;4 Bytes First command argument. May be data or address, depending on command. Data is 32-bit number. Address is 24-bit address and 8-bit length.
+=$000275				MARG7            = $000275 ;4 Bytes First command argument. May be data or address, depending on command. Data is 32-bit number. Address is 24-bit address and 8-bit length.
+=$000279				MARG8            = $000279 ;4 Bytes First command argument. May be data or address, depending on command. Data is 32-bit number. Address is 24-bit address and 8-bit length.
+=$000300				LOADFILE_VARS    = $000300 ; Byte
+=$000300				LOADFILE_NAME    = $000300 ;3 Bytes (addr) Name of file to load. Address in Data Page
+=$000303				LOADFILE_LEN     = $000303 ;1 Byte  Length of filename. 0=Null Terminated
+=$000304				LOADPBR          = $000304 ;1 Byte  First Program Bank of loaded file ($05 segment)
+=$000305				LOADPC           = $000305 ;2 Bytes Start address of loaded file ($05 segment)
+=$000307				LOADDBR          = $000307 ;1 Byte  First data bank of loaded file ($06 segment)
+=$000308				LOADADDR         = $000308 ;2 Bytes FIrst data address of loaded file ($06 segment)
+=$00030a				LOADFILE_TYPE    = $00030A ;3 Bytes (addr) File type string in loaded data file. Actual string data will be in Bank 1. Valid values are BIN, PRG, P16
+=$00030d				BLOCK_LEN        = $00030D ;2 Bytes Length of block being loaded
+=$00030f				BLOCK_ADDR       = $00030F ;2 Bytes (temp) Address of block being loaded
+=$000311				BLOCK_BANK       = $000311 ;1 Byte  (temp) Bank of block being loaded
+=$000312				BLOCK_COUNT      = $000312 ;2 Bytes (temp) Counter of bytes read as file is loaded
+=$000320				SDOS_BLOCK_BEGIN = $000320 ;
+=$000324				SDOS_LOAD_ADDY   = $000324 ; 4 Bytes (Uses 3 Only)
+=$000328				SDOS_FILE_SIZE   = $000328 ;
+=$00032c				SDOS_BYTE_NUMBER = $00032C ; Number of Byte to Read or Write before changing the Pointer
+=$000330				SDOS_REG_WR32_AD = $000330 ; 4 Bytes (Used to read and Write Values in/from CH376S)
+=$000334				SDOS_BYTE_PTR    = $000334
+=$000380				SDOS_FILE_NAME   = $000380 ; // Max of 128 Chars
+=$000400				SDOS_BLK_BEGIN   = $000400 ; 512 Bytes to Store SD Card Incoming or Outcoming Block
+=$0006ff				SDOS_BLK_END     = $0006FF ;
+=$000e00				STEF_BLOB_BEGIN  = $000E00 ; Temp Buffer for Testing
+=$000eff				STEF_BLOB_END    = $000EFF ;
+=$000f00				KEY_BUFFER       = $000F00 ;64 Bytes keyboard buffer
+=$40					KEY_BUFFER_SIZE  = $40 ;64 Bytes (constant) keyboard buffer length
+=$000f3f				KEY_BUFFER_END   = $000F3F ;1 Byte  Last byte of keyboard buffer
+=$000f40				KEY_BUFFER_RPOS  = $000F40 ;2 Bytes keyboard buffer read position
+=$000f42				KEY_BUFFER_WPOS  = $000F42 ;2 Bytes keyboard buffer write position
+=$000f43				KEYBOARD_SC_FLG  = $000F43 ;1 Bytes that indicate the Status of Left Shift, Left CTRL, Left ALT, Right Shift
+=$000f44				KEYBOARD_SC_TMP  = $000F44 ;1 Byte, Interrupt Save Scan Code while Processing
+=$001000				TEST_BEGIN       = $001000 ;28672 Bytes Test/diagnostic code for prototype.
+=$007fff				TEST_END         = $007FFF ;0 Byte
+=$008000				STACK_BEGIN      = $008000 ;32512 Bytes The default beginning of stack space
+=$00feff				STACK_END        = $00FEFF ;0 Byte  End of stack space. Everything below this is I/O space
+=$18ff00				ISR_BEGIN        = $18FF00 ; Byte  Beginning of CPU vectors in Direct page
+=$18ff00				HRESET           = $18FF00 ;16 Bytes Handle RESET asserted. Reboot computer and re-initialize the kernel.
+=$18ff10				HCOP             = $18FF10 ;16 Bytes Handle the COP instruction. Program use; not used by OS
+=$18ff20				HBRK             = $18FF20 ;16 Bytes Handle the BRK instruction. Returns to BASIC Ready prompt.
+=$18ff30				HABORT           = $18FF30 ;16 Bytes Handle ABORT asserted. Return to Ready prompt with an error message.
+=$18ff40				HNMI             = $18FF40 ;32 Bytes Handle NMI
+=$18ff60				HIRQ             = $18FF60 ;32 Bytes Handle IRQ
+=$18ff80				Unused_FF80      = $18FF80 ;End of direct page Interrrupt handlers
+=$18ffe0				VECTORS_BEGIN    = $18FFE0 ;0 Byte  Interrupt vectors
+=$00ffe0				JMP_READY        = $00FFE0 ;4 Bytes Jumps to ROM READY routine. Modified whenever alternate command interpreter is loaded.
+=$00ffe4				VECTOR_COP       = $00FFE4 ;2 Bytes Native COP Interrupt vector
+=$00ffe6				VECTOR_BRK       = $00FFE6 ;2 Bytes Native BRK Interrupt vector
+=$00ffe8				VECTOR_ABORT     = $00FFE8 ;2 Bytes Native ABORT Interrupt vector
+=$00ffea				VECTOR_NMI       = $00FFEA ;2 Bytes Native NMI Interrupt vector
+=$00ffec				VECTOR_RESET     = $00FFEC ;2 Bytes Unused (Native RESET vector)
+=$00ffee				VECTOR_IRQ       = $00FFEE ;2 Bytes Native IRQ Vector
+=$00fff0				RETURN           = $00FFF0 ;4 Bytes RETURN key handler. Points to BASIC or MONITOR subroutine to execute when RETURN is pressed.
+=$00fff4				VECTOR_ECOP      = $00FFF4 ;2 Bytes Emulation mode interrupt handler
+=$00fff6				VECTOR_EBRK      = $00FFF6 ;2 Bytes Emulation mode interrupt handler
+=$00fff8				VECTOR_EABORT    = $00FFF8 ;2 Bytes Emulation mode interrupt handler
+=$00fffa				VECTOR_ENMI      = $00FFFA ;2 Bytes Emulation mode interrupt handler
+=$00fffc				VECTOR_ERESET    = $00FFFC ;2 Bytes Emulation mode interrupt handler
+=$00fffe				VECTOR_EIRQ      = $00FFFE ;2 Bytes Emulation mode interrupt handler
+=$200000				VECTORS_END      = $200000 ;*End of vector space
+=$00ffff				BANK0_END        = $00FFFF ;End of Bank 00 and Direct page
+
+;******  Return to file: graph3.asm
+
+
+;******  Processing file: vicky_def.asm
+
+=$af0000				MASTER_CTRL_REG_L	      = $AF0000
+=$01					Mstr_Ctrl_Text_Mode_En  = $01       ; Enable the Text Mode
+=$02					Mstr_Ctrl_Text_Overlay  = $02       ; Enable the Overlay of the text mode on top of Graphic Mode (the Background Color is ignored)
+=$04					Mstr_Ctrl_Graph_Mode_En = $04       ; Enable the Graphic Mode
+=$08					Mstr_Ctrl_Bitmap_En     = $08       ; Enable the Bitmap Module In Vicky
+=$10					Mstr_Ctrl_TileMap_En    = $10       ; Enable the Tile Module in Vicky
+=$20					Mstr_Ctrl_Sprite_En     = $20       ; Enable the Sprite Module in Vicky
+=$40					Mstr_Ctrl_GAMMA_En      = $40       ; this Enable the GAMMA correction - The Analog and DVI have different color value, the GAMMA is great to correct the difference
+=$80					Mstr_Ctrl_Disable_Vid   = $80       ; This will disable the Scanning of the Video hence giving 100% bandwith to the CPU
+=$af0001				MASTER_CTRL_REG_H	      = $AF0001
+=$af0002				VKY_RESERVED_00         = $AF0002
+=$af0003				VKY_RESERVED_01         = $AF0003
+=$af0004				BORDER_CTRL_REG         = $AF0004
+=$01					Border_Ctrl_Enable      = $01
+=$af0005				BORDER_COLOR_B          = $AF0005
+=$af0006				BORDER_COLOR_G          = $AF0006
+=$af0007				BORDER_COLOR_R          = $AF0007
+=$af0008				BACKGROUND_COLOR_B      = $AF0008 ; When in Graphic Mode, if a pixel is "0" then the Background pixel is chosen
+=$af0009				BACKGROUND_COLOR_G      = $AF0009
+=$af000a				BACKGROUND_COLOR_R      = $AF000A ;
+=$af0010				VKY_TXT_CURSOR_CTRL_REG = $AF0010   ;[0]  Enable Text Mode
+=$01					Vky_Cursor_Enable       = $01
+=$02					Vky_Cursor_Flash_Rate0  = $02
+=$04					Vky_Cursor_Flash_Rate1  = $04
+=$08					Vky_Cursor_FONT_Page0   = $08       ; Pick Font Page 0 or Font Page 1
+=$10					Vky_Cursor_FONT_Page1   = $10       ; Pick Font Page 0 or Font Page 1
+=$af0011				VKY_TXT_RESERVED        = $AF0011   ;Not in Use
+=$af0012				VKY_TXT_CURSOR_CHAR_REG = $AF0012
+=$af0013				VKY_TXT_CURSOR_COLR_REG = $AF0013
+=$af0014				VKY_TXT_CURSOR_X_REG_L  = $AF0014
+=$af0015				VKY_TXT_CURSOR_X_REG_H  = $AF0015
+=$af0016				VKY_TXT_CURSOR_Y_REG_L  = $AF0016
+=$af0017				VKY_TXT_CURSOR_Y_REG_H  = $AF0017
+=$af001c				VKY_INFO_CHIP_NUM_L     = $AF001C
+=$af001d				VKY_INFO_CHIP_NUM_H     = $AF001D
+=$af001e				VKY_INFO_CHIP_VER_L     = $AF001E
+=$af001f				VKY_INFO_CHIP_VER_H     = $AF001F
+=$01					TILE_Enable             = $01
+=$02					TILE_LUT0               = $02
+=$04					TILE_LUT1               = $04
+=$08					TILE_LUT2               = $08
+=$80					TILESHEET_256x256_En    = $80   ; 0 -> Sequential, 1-> 256x256 Tile Sheet Striding
+=$af0100				TL0_CONTROL_REG         = $AF0100       ; Bit[0] - Enable, Bit[3:1] - LUT Select,
+=$af0101				TL0_START_ADDY_L        = $AF0101       ; Not USed right now - Starting Address to where is the MAP
+=$af0102				TL0_START_ADDY_M        = $AF0102
+=$af0103				TL0_START_ADDY_H        = $AF0103
+=$af0104				TL0_MAP_X_STRIDE_L      = $AF0104       ; The Stride of the Map
+=$af0105				TL0_MAP_X_STRIDE_H      = $AF0105
+=$af0106				TL0_MAP_Y_STRIDE_L      = $AF0106       ; The Stride of the Map
+=$af0107				TL0_MAP_Y_STRIDE_H      = $AF0107
+=$af0108				TL1_CONTROL_REG         = $AF0108       ; Bit[0] - Enable, Bit[3:1] - LUT Select,
+=$af0109				TL1_START_ADDY_L        = $AF0109       ; Not USed right now - Starting Address to where is the MAP
+=$af010a				TL1_START_ADDY_M        = $AF010A
+=$af010b				TL1_START_ADDY_H        = $AF010B
+=$af010c				TL1_MAP_X_STRIDE_L      = $AF010C       ; The Stride of the Map
+=$af010d				TL1_MAP_X_STRIDE_H      = $AF010D
+=$af010e				TL1_MAP_Y_STRIDE_L      = $AF010E       ; The Stride of the Map
+=$af010f				TL1_MAP_Y_STRIDE_H      = $AF010F
+=$af0110				TL2_CONTROL_REG         = $AF0110       ; Bit[0] - Enable, Bit[3:1] - LUT Select,
+=$af0111				TL2_START_ADDY_L        = $AF0111       ; Not USed right now - Starting Address to where is the MAP
+=$af0112				TL2_START_ADDY_M        = $AF0112
+=$af0113				TL2_START_ADDY_H        = $AF0113
+=$af0114				TL2_MAP_X_STRIDE_L      = $AF0114       ; The Stride of the Map
+=$af0115				TL2_MAP_X_STRIDE_H      = $AF0115
+=$af0116				TL2_MAP_Y_STRIDE_L      = $AF0116       ; The Stride of the Map
+=$af0117				TL2_MAP_Y_STRIDE_H      = $AF0117
+=$af0118				TL3_CONTROL_REG         = $AF0118       ; Bit[0] - Enable, Bit[3:1] - LUT Select,
+=$af0119				TL3_START_ADDY_L        = $AF0119       ; Not USed right now - Starting Address to where is the MAP
+=$af011a				TL3_START_ADDY_M        = $AF011A
+=$af011b				TL3_START_ADDY_H        = $AF011B
+=$af011c				TL3_MAP_X_STRIDE_L      = $AF011C       ; The Stride of the Map
+=$af011d				TL3_MAP_X_STRIDE_H      = $AF011D
+=$af011e				TL3_MAP_Y_STRIDE_L      = $AF011E       ; The Stride of the Map
+=$af011f				TL3_MAP_Y_STRIDE_H      = $AF011F
+=$af0140				BM_CONTROL_REG          = $AF0140
+=$af0141				BM_START_ADDY_L         = $AF0141
+=$af0142				BM_START_ADDY_M         = $AF0142
+=$af0143				BM_START_ADDY_H         = $AF0143
+=$af0144				BM_X_SIZE_L             = $AF0144
+=$af0145				BM_X_SIZE_H             = $AF0145
+=$af0146				BM_Y_SIZE_L             = $AF0146
+=$af0147				BM_Y_SIZE_H             = $AF0147
+=$af0148				BM_RESERVED_0           = $AF0148
+=$af0149				BM_RESERVED_1           = $AF0149
+=$af014a				BM_RESERVED_2           = $AF014A
+=$af014b				BM_RESERVED_3           = $AF014B
+=$af014c				BM_RESERVED_4           = $AF014C
+=$af014d				BM_RESERVED_5           = $AF014D
+=$af014e				BM_RESERVED_6           = $AF014E
+=$af014f				BM_RESERVED_7           = $AF014F
+=$01					SPRITE_Enable             = $01
+=$02					SPRITE_LUT0               = $02 ; This is the LUT that the Sprite will use
+=$04					SPRITE_LUT1               = $04
+=$08					SPRITE_LUT2               = $08 ; Only 4 LUT for Now, So this bit is not used.
+=$10					SPRITE_DEPTH0             = $10 ; This is the Layer the Sprite will be Displayed in
+=$20					SPRITE_DEPTH1             = $20
+=$40					SPRITE_DEPTH2             = $40
+=$af0200				SP00_CONTROL_REG        = $AF0200
+=$af0201				SP00_ADDY_PTR_L         = $AF0201
+=$af0202				SP00_ADDY_PTR_M         = $AF0202
+=$af0203				SP00_ADDY_PTR_H         = $AF0203
+=$af0204				SP00_X_POS_L            = $AF0204
+=$af0205				SP00_X_POS_H            = $AF0205
+=$af0206				SP00_Y_POS_L            = $AF0206
+=$af0207				SP00_Y_POS_H            = $AF0207
+=$af0208				SP01_CONTROL_REG        = $AF0208
+=$af0209				SP01_ADDY_PTR_L         = $AF0209
+=$af020a				SP01_ADDY_PTR_M         = $AF020A
+=$af020b				SP01_ADDY_PTR_H         = $AF020B
+=$af020c				SP01_X_POS_L            = $AF020C
+=$af020d				SP01_X_POS_H            = $AF020D
+=$af020e				SP01_Y_POS_L            = $AF020E
+=$af020f				SP01_Y_POS_H            = $AF020F
+=$af0210				SP02_CONTROL_REG        = $AF0210
+=$af0211				SP02_ADDY_PTR_L         = $AF0211
+=$af0212				SP02_ADDY_PTR_M         = $AF0212
+=$af0213				SP02_ADDY_PTR_H         = $AF0213
+=$af0214				SP02_X_POS_L            = $AF0214
+=$af0215				SP02_X_POS_H            = $AF0215
+=$af0216				SP02_Y_POS_L            = $AF0216
+=$af0217				SP02_Y_POS_H            = $AF0217
+=$af0218				SP03_CONTROL_REG        = $AF0218
+=$af0219				SP03_ADDY_PTR_L         = $AF0219
+=$af021a				SP03_ADDY_PTR_M         = $AF021A
+=$af021b				SP03_ADDY_PTR_H         = $AF021B
+=$af021c				SP03_X_POS_L            = $AF021C
+=$af021d				SP03_X_POS_H            = $AF021D
+=$af021e				SP03_Y_POS_L            = $AF021E
+=$af021f				SP03_Y_POS_H            = $AF021F
+=$af0220				SP04_CONTROL_REG        = $AF0220
+=$af0221				SP04_ADDY_PTR_L         = $AF0221
+=$af0222				SP04_ADDY_PTR_M         = $AF0222
+=$af0223				SP04_ADDY_PTR_H         = $AF0223
+=$af0224				SP04_X_POS_L            = $AF0224
+=$af0225				SP04_X_POS_H            = $AF0225
+=$af0226				SP04_Y_POS_L            = $AF0226
+=$af0227				SP04_Y_POS_H            = $AF0227
+=$af0228				SP05_CONTROL_REG        = $AF0228
+=$af0229				SP05_ADDY_PTR_L         = $AF0229
+=$af022a				SP05_ADDY_PTR_M         = $AF022A
+=$af022b				SP05_ADDY_PTR_H         = $AF022B
+=$af022c				SP05_X_POS_L            = $AF022C
+=$af022d				SP05_X_POS_H            = $AF022D
+=$af022e				SP05_Y_POS_L            = $AF022E
+=$af022f				SP05_Y_POS_H            = $AF022F
+=$af0230				SP06_CONTROL_REG        = $AF0230
+=$af0231				SP06_ADDY_PTR_L         = $AF0231
+=$af0232				SP06_ADDY_PTR_M         = $AF0232
+=$af0233				SP06_ADDY_PTR_H         = $AF0233
+=$af0234				SP06_X_POS_L            = $AF0234
+=$af0235				SP06_X_POS_H            = $AF0235
+=$af0236				SP06_Y_POS_L            = $AF0236
+=$af0237				SP06_Y_POS_H            = $AF0237
+=$af0238				SP07_CONTROL_REG        = $AF0238
+=$af0239				SP07_ADDY_PTR_L         = $AF0239
+=$af023a				SP07_ADDY_PTR_M         = $AF023A
+=$af023b				SP07_ADDY_PTR_H         = $AF023B
+=$af023c				SP07_X_POS_L            = $AF023C
+=$af023d				SP07_X_POS_H            = $AF023D
+=$af023e				SP07_Y_POS_L            = $AF023E
+=$af023f				SP07_Y_POS_H            = $AF023F
+=$af0240				SP08_CONTROL_REG        = $AF0240
+=$af0241				SP08_ADDY_PTR_L         = $AF0241
+=$af0242				SP08_ADDY_PTR_M         = $AF0242
+=$af0243				SP08_ADDY_PTR_H         = $AF0243
+=$af0244				SP08_X_POS_L            = $AF0244
+=$af0245				SP08_X_POS_H            = $AF0245
+=$af0246				SP08_Y_POS_L            = $AF0246
+=$af0247				SP08_Y_POS_H            = $AF0247
+=$af0248				SP09_CONTROL_REG        = $AF0248
+=$af0249				SP09_ADDY_PTR_L         = $AF0249
+=$af024a				SP09_ADDY_PTR_M         = $AF024A
+=$af024b				SP09_ADDY_PTR_H         = $AF024B
+=$af024c				SP09_X_POS_L            = $AF024C
+=$af024d				SP09_X_POS_H            = $AF024D
+=$af024e				SP09_Y_POS_L            = $AF024E
+=$af024f				SP09_Y_POS_H            = $AF024F
+=$af0250				SP10_CONTROL_REG        = $AF0250
+=$af0251				SP10_ADDY_PTR_L         = $AF0251
+=$af0252				SP10_ADDY_PTR_M         = $AF0252
+=$af0253				SP10_ADDY_PTR_H         = $AF0253
+=$af0254				SP10_X_POS_L            = $AF0254
+=$af0255				SP10_X_POS_H            = $AF0255
+=$af0256				SP10_Y_POS_L            = $AF0256
+=$af0257				SP10_Y_POS_H            = $AF0257
+=$af0258				SP11_CONTROL_REG        = $AF0258
+=$af0259				SP11_ADDY_PTR_L         = $AF0259
+=$af025a				SP11_ADDY_PTR_M         = $AF025A
+=$af025b				SP11_ADDY_PTR_H         = $AF025B
+=$af025c				SP11_X_POS_L            = $AF025C
+=$af025d				SP11_X_POS_H            = $AF025D
+=$af025e				SP11_Y_POS_L            = $AF025E
+=$af025f				SP11_Y_POS_H            = $AF025F
+=$af0260				SP12_CONTROL_REG        = $AF0260
+=$af0261				SP12_ADDY_PTR_L         = $AF0261
+=$af0262				SP12_ADDY_PTR_M         = $AF0262
+=$af0263				SP12_ADDY_PTR_H         = $AF0263
+=$af0264				SP12_X_POS_L            = $AF0264
+=$af0265				SP12_X_POS_H            = $AF0265
+=$af0266				SP12_Y_POS_L            = $AF0266
+=$af0267				SP12_Y_POS_H            = $AF0267
+=$af0268				SP13_CONTROL_REG        = $AF0268
+=$af0269				SP13_ADDY_PTR_L         = $AF0269
+=$af026a				SP13_ADDY_PTR_M         = $AF026A
+=$af026b				SP13_ADDY_PTR_H         = $AF026B
+=$af026c				SP13_X_POS_L            = $AF026C
+=$af026d				SP13_X_POS_H            = $AF026D
+=$af026e				SP13_Y_POS_L            = $AF026E
+=$af026f				SP13_Y_POS_H            = $AF026F
+=$af0270				SP14_CONTROL_REG        = $AF0270
+=$af0271				SP14_ADDY_PTR_L         = $AF0271
+=$af0272				SP14_ADDY_PTR_M         = $AF0272
+=$af0273				SP14_ADDY_PTR_H         = $AF0273
+=$af0274				SP14_X_POS_L            = $AF0274
+=$af0275				SP14_X_POS_H            = $AF0275
+=$af0276				SP14_Y_POS_L            = $AF0276
+=$af0277				SP14_Y_POS_H            = $AF0277
+=$af0278				SP15_CONTROL_REG        = $AF0278
+=$af0279				SP15_ADDY_PTR_L         = $AF0279
+=$af027a				SP15_ADDY_PTR_M         = $AF027A
+=$af027b				SP15_ADDY_PTR_H         = $AF027B
+=$af027c				SP15_X_POS_L            = $AF027C
+=$af027d				SP15_X_POS_H            = $AF027D
+=$af027e				SP15_Y_POS_L            = $AF027E
+=$af027f				SP15_Y_POS_H            = $AF027F
+=$af0280				SP16_CONTROL_REG        = $AF0280
+=$af0281				SP16_ADDY_PTR_L         = $AF0281
+=$af0282				SP16_ADDY_PTR_M         = $AF0282
+=$af0283				SP16_ADDY_PTR_H         = $AF0283
+=$af0284				SP16_X_POS_L            = $AF0284
+=$af0285				SP16_X_POS_H            = $AF0285
+=$af0286				SP16_Y_POS_L            = $AF0286
+=$af0287				SP16_Y_POS_H            = $AF0287
+=$af0288				SP17_CONTROL_REG        = $AF0288
+=$af0289				SP17_ADDY_PTR_L         = $AF0289
+=$af028a				SP17_ADDY_PTR_M         = $AF028A
+=$af028b				SP17_ADDY_PTR_H         = $AF028B
+=$af028c				SP17_X_POS_L            = $AF028C
+=$af028d				SP17_X_POS_H            = $AF028D
+=$af028e				SP17_Y_POS_L            = $AF028E
+=$af028f				SP17_Y_POS_H            = $AF028F
+=$af0400				VDMA_CONTROL_REG        = $AF0400
+=$af0401				VDMA_COUNT_REG_L        = $AF0401
+=$af0402				VDMA_COUNT_REG_M        = $AF0402
+=$af0403				VDMA_COUNT_REG_H        = $AF0403
+=$af0404				VDMA_DATA_2_WRITE_L     = $AF0404
+=$af0405				VDMA_DATA_2_WRITE_H     = $AF0405
+=$af0406				VDMA_STRIDE_L           = $AF0406
+=$af0407				VDMA_STRIDE_H           = $AF0407
+=$af0408				VDMA_SRC_ADDY_L         = $AF0408
+=$af0409				VDMA_SRC_ADDY_M         = $AF0409
+=$af040a				VDMA_SRC_ADDY_H         = $AF040A
+=$af040b				VDMA_RESERVED_0         = $AF040B
+=$af040c				VDMA_DST_ADDY_L         = $AF040C
+=$af040d				VDMA_DST_ADDY_M         = $AF040D
+=$af040e				VDMA_DST_ADDY_H         = $AF040E
+=$af040f				VDMA_RESERVED_1         = $AF040F
+=$af1f40				FG_CHAR_LUT_PTR         = $AF1F40
+=$af1f80				BG_CHAR_LUT_PTR		      = $AF1F80
+=$af2000				GRPH_LUT0_PTR		        = $AF2000
+=$af2400				GRPH_LUT1_PTR		        = $AF2400
+=$af2800				GRPH_LUT2_PTR		        = $AF2800
+=$af2c00				GRPH_LUT3_PTR		        = $AF2C00
+=$af3000				GRPH_LUT4_PTR		        = $AF3000
+=$af3400				GRPH_LUT5_PTR		        = $AF3400
+=$af3800				GRPH_LUT6_PTR		        = $AF3800
+=$af3c00				GRPH_LUT7_PTR		        = $AF3C00
+=$af4000				GAMMA_B_LUT_PTR		      = $AF4000
+=$af4100				GAMMA_G_LUT_PTR		      = $AF4100
+=$af4200				GAMMA_R_LUT_PTR		      = $AF4200
+=$af5000				TILE_MAP0       		    = $AF5000     ;$AF5000 - $AF57FF
+=$af5800				TILE_MAP1               = $AF5800     ;$AF5800 - $AF5FFF
+=$af6000				TILE_MAP2               = $AF6000     ;$AF6000 - $AF67FF
+=$af6800				TILE_MAP3               = $AF6800     ;$AF6800 - $AF6FFF
+=$af8000				FONT_MEMORY_BANK0       = $AF8000     ;$AF8000 - $AF87FF
+=$af8800				FONT_MEMORY_BANK1       = $AF8800     ;$AF8800 - $AF8FFF
+=$afa000				CS_TEXT_MEM_PTR         = $AFA000
+=$afc000				CS_COLOR_MEM_PTR        = $AFC000
+=$afe000				BTX_START               = $AFE000     ; BEATRIX Registers
+=$afffff				BTX_END                 = $AFFFFF
+
+;******  Return to file: graph3.asm
+
+=$10a8					CLRSCREEN         = $10a8
+=$10d0					IINITVKYGRPMODE   = $10d0
+=$10c8					IINITALLLUT       = $10c8
+=480					GRAPH_LINES = 480
+=640					GRAPH_COLS  = 640
+=$b0c000				GRAPH_MEM   = $b0c000
+.00e0					scr0
+>00e0					color             .byte ?
+>00e1					control           .word ?
+>00e3					graph_ptr         .long ?
+>00e6					graph_ptr_free    .byte ? ; nothing, just placeholder to two words
+>00e7					xpos              .word ?
+>00e9					xpos_fr           .word ?
+>00eb					ypos              .word ?
+>00ed					ypos_fr           .word ?
+>00ef					xorder            .word ?
+>00f1					yorder            .word ?
+>00f3					xdir              .word ? ; totalne naduzycie, bo potrzebuje jeden bit
+>00f5					ydir              .word ? ; totalne jak wyzej 0 - dodatni, 1 - ujemny
+.030000	18		clc		                  clc                                             ; switch to native
+.030001	fb		xce		                  xce                                             ;
+.030002	0b		phd		                  phd
+.030003	08		php		                  php
+.030004	c2 30		rep #$30	                REP #$30        ; set A&X long
+.030006	48		pha		                  pha
+.030007	da		phx		                  phx
+.030008	22 c8 10 00	jsl $0010c8	                  jsl IINITALLLUT
+.03000c	22 d0 10 00	jsl $0010d0	                  jsl IINITVKYGRPMODE
+.030010	22 29 01 03	jsl $030129	                  jsl LINES_INIT
+.030014	e2 20		sep #$20	                SEP #$20        ; set A short
+.030016	a9 01		lda #$01	                  lda #$01
+.030018	8f 40 01 af	sta $af0140	                  sta BM_CONTROL_REG
+.03001c	a9 0c		lda #$0c	                  lda #$04|$08
+.03001e	8f 00 00 af	sta $af0000	                  sta MASTER_CTRL_REG_L
+.030022	a9 00		lda #$00	                  LDA #$00
+.030024	8f 04 00 af	sta $af0004	                  STA BORDER_CTRL_REG
+.030028	a9 00		lda #$00	                  lda #$00
+.03002a	8f 08 00 af	sta $af0008	                  sta BACKGROUND_COLOR_B
+.03002e	8f 0a 00 af	sta $af000a	                  sta BACKGROUND_COLOR_R
+.030032	8f 09 00 af	sta $af0009	                  sta BACKGROUND_COLOR_G
+.030036	a9 02		lda #$02	                  lda #2
+.030038	85 e0		sta $e0		                  sta scr0.color
+.03003a	c2 30		rep #$30	                REP #$30        ; set A&X long
+.03003c	a9 01 00	lda #$0001	                  lda @w #$0001
+.03003f	85 ef		sta $ef		                  sta scr0.xorder
+.030041	a9 01 00	lda #$0001	                  lda @w #$0001
+.030044	85 f1		sta $f1		                  sta scr0.yorder
+.030046	a9 64 00	lda #$0064	                  lda @w #100
+.030049	85 e7		sta $e7		                  sta scr0.xpos
+.03004b	a9 01 00	lda #$0001	                  lda @w #$0001
+.03004e	85 eb		sta $eb		                  sta scr0.ypos
+.030050	85 e1		sta $e1		                  sta scr0.control
+.030052	85 e9		sta $e9		                  sta scr0.xpos_fr
+.030054	85 ed		sta $ed		                  sta scr0.ypos_fr
+.030056	a9 00 00	lda #$0000	                  lda @w #$0000
+.030059	85 f3		sta $f3		                  sta scr0.xdir
+.03005b	85 f5		sta $f5		                  sta scr0.ydir
+.03005d	20 fc 00	jsr $0300fc	                  jsr CLEAR_SCREEN
+.030060	a5 eb		lda $eb		loop              lda scr0.ypos
+.030062	0a		asl a		                  asl a
+.030063	0a		asl a		                  asl a
+.030064	aa		tax		                  tax
+.030065	bf 70 01 03	lda $030170,x	                  lda line_offset, x
+.030069	85 e3		sta $e3		                  sta scr0.graph_ptr
+.03006b	bf 72 01 03	lda $030172,x	                  lda line_offset+2, x
+.03006f	85 e5		sta $e5		                  sta scr0.graph_ptr+2
+.030071	a4 e7		ldy $e7		                  ldy scr0.xpos
+.030073	e2 20		sep #$20	                SEP #$20        ; set A short
+.030075	a5 e0		lda $e0		                  lda scr0.color
+.030077	97 e3		sta [$e3],y	                  sta [scr0.graph_ptr], y
+.030079	c2 20		rep #$20	                REP #$20        ; set A long
+.03007b	a5 e9		lda $e9		move_x            lda scr0.xpos_fr
+.03007d	65 ef		adc $ef		                  adc scr0.xorder
+.03007f	85 e9		sta $e9		                  sta scr0.xpos_fr
+.030081	c9 0a 00	cmp #$000a	                  cmp #10
+.030084	90 30		bcc $0300b6	                  bcc move_y
+.030086	a9 00 00	lda #$0000	                  lda @w #0
+.030089	85 e9		sta $e9		                  sta scr0.xpos_fr
+.03008b	a5 f3		lda $f3		                  lda scr0.xdir
+.03008d	f0 0e		beq $03009d	                  beq x_inc
+.03008f	a5 e7		lda $e7		x_dec             lda scr0.xpos
+.030091	3a		dec a		                  dec a
+.030092	85 e7		sta $e7		                  sta scr0.xpos
+.030094	d0 20		bne $0300b6	                  bne move_y
+.030096	a9 00 00	lda #$0000	                  lda @w #0
+.030099	85 f3		sta $f3		                  sta scr0.xdir   ; zmiana kierunku
+.03009b	80 19		bra $0300b6	                  bra move_y
+.03009d	a5 e7		lda $e7		x_inc             lda scr0.xpos
+.03009f	1a		inc a		                  inc a
+.0300a0	85 e7		sta $e7		                  sta scr0.xpos
+.0300a2	c9 7f 02	cmp #$027f	                  cmp #639
+.0300a5	d0 0f		bne $0300b6	                  bne move_y
+.0300a7	a9 01 00	lda #$0001	                  lda @w #1
+.0300aa	85 f3		sta $f3		                  sta scr0.xdir   ; zmiana kierunku
+.0300ac	a5 ef		lda $ef		                  lda scr0.xorder
+.0300ae	1a		inc a		                  inc a
+.0300af	c9 03 00	cmp #$0003	                  cmp #3
+.0300b2	b0 02		bcs $0300b6	                  bcs move_y
+.0300b4	85 ef		sta $ef		                  sta scr0.xorder
+.0300b6	a5 ed		lda $ed		move_y            lda scr0.ypos_fr
+.0300b8	65 f1		adc $f1		                  adc scr0.yorder
+.0300ba	85 ed		sta $ed		                  sta scr0.ypos_fr
+.0300bc	c9 0a 00	cmp #$000a	                  cmp #10
+.0300bf	90 26		bcc $0300e7	                  bcc counter
+.0300c1	a9 00 00	lda #$0000	                  lda @w #0
+.0300c4	85 ed		sta $ed		                  sta scr0.ypos_fr
+.0300c6	a5 f5		lda $f5		                  lda scr0.ydir
+.0300c8	f0 0e		beq $0300d8	                  beq y_inc
+.0300ca	a5 eb		lda $eb		y_dec             lda scr0.ypos
+.0300cc	3a		dec a		                  dec a
+.0300cd	85 eb		sta $eb		                  sta scr0.ypos
+.0300cf	d0 16		bne $0300e7	                  bne counter
+.0300d1	a9 00 00	lda #$0000	                  lda @w #0
+.0300d4	85 f5		sta $f5		                  sta scr0.ydir   ; zmiana kierunku
+.0300d6	80 0f		bra $0300e7	                  bra counter
+.0300d8	a5 eb		lda $eb		y_inc             lda scr0.ypos
+.0300da	1a		inc a		                  inc a
+.0300db	85 eb		sta $eb		                  sta scr0.ypos
+.0300dd	c9 df 01	cmp #$01df	                  cmp #479
+.0300e0	d0 05		bne $0300e7	                  bne counter
+.0300e2	a9 01 00	lda #$0001	                  lda @w #1
+.0300e5	85 f5		sta $f5		                  sta scr0.ydir   ; zmiana kierunku
+.0300e7	a2 e8 03	ldx #$03e8	counter           ldx @w #1000
+.0300ea	ca		dex		delay             dex
+.0300eb	d0 fd		bne $0300ea	                  bne delay
+.0300ed	4c 60 00	jmp $030060	                  jmp loop
+.0300f0	ea		nop		finish            nop
+.0300f1	c2 20		rep #$20	                REP #$20        ; set A long
+.0300f3	fa		plx		                  plx
+.0300f4	68		pla		                  pla
+.0300f5	28		plp		                  plp
+.0300f6	2b		pld		                  pld
+.0300f7	42 03		wdm #$03	endles_loop       wdm #3
+.0300f9	4c f7 00	jmp $0300f7	                  jmp endles_loop
+.0300fc					CLEAR_SCREEN
+.0300fc	c2 30		rep #$30	                REP #$30        ; set A&X long
+.0300fe	a2 00 00	ldx #$0000	                  ldx @w #$0000
+.030101	bf 70 01 03	lda $030170,x	clear0            lda line_offset, x
+.030105	85 e3		sta $e3		                  sta scr0.graph_ptr
+.030107	bf 72 01 03	lda $030172,x	                  lda line_offset+2, x
+.03010b	85 e5		sta $e5		                  sta scr0.graph_ptr+2
+.03010d	e8		inx		                  inx
+.03010e	e8		inx		                  inx
+.03010f	e8		inx		                  inx
+.030110	e8		inx		                  inx
+.030111	e0 84 07	cpx #$0784	                  cpx #481 * 4
+.030114	f0 12		beq $030128	                  beq clear_finish
+.030116	a9 00 00	lda #$0000	                  lda @w #$0000
+.030119	a0 00 00	ldy #$0000	                  ldy @w #$0000
+.03011c	97 e3		sta [$e3],y	clear1            sta [scr0.graph_ptr],y
+.03011e	c8		iny		                  iny
+.03011f	c8		iny		                  iny
+.030120	c0 80 02	cpy #$0280	                  cpy #640
+.030123	90 f7		bcc $03011c	                  bcc clear1
+.030125	4c 01 01	jmp $030101	                  jmp clear0
+.030128	60		rts		clear_finish      rts
+.030129					LINES_INIT
+.030129	e2 20		sep #$20	                SEP #$20        ; set A short
+.03012b	a9 b0		lda #$b0	                  lda #`GRAPH_MEM
+.03012d	85 e5		sta $e5		                  sta scr0.graph_ptr+2
+.03012f	a9 00		lda #$00	                  lda #$00
+.030131	85 e6		sta $e6		                  sta scr0.graph_ptr+3
+.030133	c2 30		rep #$30	                REP #$30        ; set A&X long
+.030135	a9 00 c0	lda #$c000	                  lda #<>GRAPH_MEM
+.030138	85 e3		sta $e3		                  sta scr0.graph_ptr
+.03013a	a2 00 00	ldx #$0000	                  ldx #$0000
+.03013d	a5 e3		lda $e3		linit0            lda scr0.graph_ptr
+.03013f	9f 70 01 03	sta $030170,x	                  sta line_offset, x
+.030143	e8		inx		                  inx
+.030144	e8		inx		                  inx
+.030145	a5 e5		lda $e5		                  lda scr0.graph_ptr+2
+.030147	9f 70 01 03	sta $030170,x	                  sta line_offset, x
+.03014b	e8		inx		                  inx
+.03014c	e8		inx		                  inx
+.03014d	e0 80 07	cpx #$0780	                  cpx #GRAPH_LINES * 4            ; 480 * 4
+.030150	f0 0f		beq $030161	                  beq linit_end
+.030152	a5 e3		lda $e3		                  lda scr0.graph_ptr
+.030154	18		clc		                  clc
+.030155	69 80 02	adc #$0280	                  adc #GRAPH_COLS
+.030158	85 e3		sta $e3		                  sta scr0.graph_ptr
+.03015a	90 e1		bcc $03013d	                  bcc linit0
+.03015c	e6 e5		inc $e5		                  inc scr0.graph_ptr+2
+.03015e	4c 3d 01	jmp $03013d	                  jmp linit0
+.030161	6b		rtl		linit_end   rtl
+>030162					                  .align $10                                      ; waste of memory, but debugging is easier
+>030170	00 00 00 00 00 00 00 00		line_offset .fill 480 * 4, $00                    ; not possible to determine at compile time
+>030178	00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+;	...repeated 118 times (1888 bytes)...
+>0308e8	00 00 00 00 00 00 00 00
+
+;******  End of listing
